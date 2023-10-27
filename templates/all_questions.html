@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Questions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+        }
+
+        h1 {
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #fff;
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #007bff;
+            margin-top: 0;
+        }
+
+        p {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        p.author {
+            color: #888;
+        }
+
+        h3 {
+            color: #555;
+            font-size: 18px;
+            margin: 15px 0;
+        }
+
+        ul.answers {
+            list-style: none;
+            padding: 0;
+        }
+
+        li.answer {
+            border: 1px solid #eee;
+            padding: 10px;
+            margin: 10px;
+            background-color: #f9f9f9;
+        }
+        .answer-container {
+            display: none;
+            padding: 20px;
+            border: 1px solid #ddd;
+            margin-top: 10px;
+        }
+
+        .answer-form {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .btn {
+            cursor: pointer;
+            color: blue;
+        }
+.top-bar {
+            background-color: #007bff;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        .top-bar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .add-question-button {
+            background-color: #28a745;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        
+        .add-question-button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <a href="{% url 'logout' %}" class="logout-button">Logout</a>
+        <a href="{% url 'add_question' %}" class="add-question-button">Add Question</a>
+    <h1>All Questions</h1>
+    <ul>
+        {% for question in questions %}
+            <li>
+                <a href="{% url 'question_detail' question_id=question.id %}">
+                        <h2 class="question-title">{{ question.title }}</h2>
+                </a>
+                <p>{{ question.content }}</p>
+                <p class="author">Author: {{ question.author.username }}</p>
+                <p class="answer-count">Answer Count: {{ question.answer_count }}</p>
+                <p class="like-count">Like Count: {{ question.like_count }}</p>
+                <a href="{% url 'question_detail' question_id=question.id %}">
+                        <h2 <button class="btn toggle-answers">Show Answers&Add Answer</button></h2>
+                </a>
+                
+                <div class="answer-container">
+                    <h3>Answers:</h3>
+                    <ul class="answers">
+                        {% for answer in question.answer_set.all %}
+                            <li class="answer">
+                                <p>{{ answer.content }}</p>
+                                <p class="author">Author: {{ answer.author.username }}</p>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% comment %} <button class="btn toggle-answer-form">Add Your Answer</button> {% endcomment %}
+                <form class="answer-form" method="post">
+                    {% csrf_token %}
+                    {{ answer_form.content.label_tag }}
+                    {{ answer_form.content }}
+                    {% comment %} <button type="submit">Submit Answer</button>s {% endcomment %}
+                </form>
+
+            </li>
+        {% endfor %}
+    </ul>
+    <script>
+        // JavaScript for toggling answer containers and answer submission forms
+        const toggleButtons = document.querySelectorAll('.toggle-answers');
+        const answerContainers = document.querySelectorAll('.answer-container');
+        const toggleFormButtons = document.querySelectorAll('.toggle-answer-form');
+        const answerForms = document.querySelectorAll('.answer-form');
+
+        toggleButtons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                answerContainers[index].classList.toggle('show-answers');
+                button.textContent = answerContainers[index].classList.contains('show-answers') ? 'Hide Answers' : 'Show Answers';
+            });
+        });
+
+        toggleFormButtons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                answerForms[index].style.display = answerForms[index].style.display === 'block' ? 'none' : 'block';
+                button.textContent = answerForms[index].style.display === 'block' ? 'Cancel' : 'Add Your Answer';
+            });
+        });
+    </script>
+</body>
+</html>

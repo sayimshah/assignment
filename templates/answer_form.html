@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Answer Question</title>
+</head>
+<body>
+    <h1>Answer Question</h1>
+    <form method="post" action="{% url 'answer_question' question_id=question.id %}">
+    {% csrf_token %}
+    {{ form.content.label_tag }}
+    {{ form.content }}
+    <button type="submit">Submit Answer</button>
+</form>
+</body>
+</html>
